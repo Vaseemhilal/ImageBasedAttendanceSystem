@@ -1,0 +1,23 @@
+mail = 'mir.waseem10@yahoo.com';
+psswd = 'Attitude1.';
+host = 'smtp.mail.yahoo.com';
+port  = '465';
+emailto = 'waseemhilal10@gmail.com';
+m_subject = 'subject';
+m_text = '*** This is an automatically generated email, please do not reply ***Follow the link below to view my facebook profile:[https://www.facebook.com/mirwaseemhilal]';
+
+setpref( 'Internet','E_mail', mail );
+setpref( 'Internet', 'SMTP_Server', host );
+setpref( 'Internet', 'SMTP_Username', mail );
+setpref( 'Internet', 'SMTP_Password', psswd );
+props = java.lang.System.getProperties;
+props.setProperty( 'mail.smtp.user', mail );
+props.setProperty( 'mail.smtp.host', host );
+props.setProperty( 'mail.smtp.port', port );
+props.setProperty( 'mail.smtp.starttls.enable', 'true' );
+props.setProperty( 'mail.smtp.debug', 'true' );
+props.setProperty( 'mail.smtp.auth', 'true' );
+props.setProperty( 'mail.smtp.socketFactory.port', port );
+props.setProperty( 'mail.smtp.socketFactory.class', 'javax.net.ssl.SSLSocketFactory' );
+props.setProperty( 'mail.smtp.socketFactory.fallback', 'false' );
+sendmail( emailto , 'Hello from MATLAB', m_text );
