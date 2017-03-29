@@ -61,9 +61,10 @@ if isconnection(com)
                         c = corr2(a,b)   
                         if c<.6 
                             sprintf('The images%i are same',sliceNumber);
+                            insert(com,'attendance',{'student_id','class','section','month','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'},{'me','123'});
                         else 
-                            disp('the images are not same'); 
-                        end
+                                disp('the images are not same'); 
+                        end; 
                     sliceNumber = sliceNumber + 1;
                 end
                 end

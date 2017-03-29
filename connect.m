@@ -13,7 +13,7 @@ if isconnection(com)
        % result=get()
        %result=get(fetch(exec('com','select * from login','DATA')))
         curs=exec(com, 'select all user, pass  from login');
-        curs=fetch(curs,3);
+        curs=fetch(curs);
         setdbprefs('DataReturnFormat','cellarray');        
         %res=fetch(res,3);
         curs.Data

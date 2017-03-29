@@ -22,7 +22,7 @@ function varargout = loginFig(varargin)
 
 % Edit the above text to modify the response to help loginFig
 
-% Last Modified by GUIDE v2.5 19-Mar-2017 14:16:46
+% Last Modified by GUIDE v2.5 27-Mar-2017 11:09:55
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -95,11 +95,16 @@ function login_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 %usr = get(handles.username,'String');
-%pwd = get(handles.password,'String');
+%pwd = get(handles.emal,'String');
+global noConnec;
+global usr;
+global emel;
 
-close(loginFig);
+usr=get(handles.username,'String');
+emel=get(handles.emal,'String');
+
 connection();
-call(mainFig);
+
 
 
 
@@ -127,18 +132,18 @@ end
 
 
 
-function password_Callback(hObject, eventdata, handles)
-% hObject    handle to password (see GCBO)
+function emal_Callback(hObject, eventdata, handles)
+% hObject    handle to emal (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of password as text
-%        str2double(get(hObject,'String')) returns contents of password as a double
+% Hints: get(hObject,'String') returns contents of emal as text
+%        str2double(get(hObject,'String')) returns contents of emal as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function password_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to password (see GCBO)
+function emal_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to emal (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -168,11 +173,21 @@ function register_Callback(hObject, eventdata, handles)
 % hObject    handle to register (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
 close(loginFig);
 call(registerFig);
 
 
     function connection()
+        %waitfor(msgbox('Click OK and please wait for me...')); 
+        global emel; % global var contains email we will give to login
+        global usr; % global var usr contains username we will give to login
+        global rowMatch; % used to match particular email of that user
+        global chkFlg1;
+        global chkFlg2;
+        chkFlg1=0;
+        chkFlg2=0;
 dbase='dbmatlab';
 username='root';
 password='';
@@ -181,41 +196,81 @@ dburl=['jdbc:mysql://localhost:3306/' dbase];
 com=database(dbase,username,password,driver,dburl);
         %disp(driver)
 if isconnection(com)
-       %insert(com,'login',{'user','pass'},{'me','123'});
-       %query =  exec(com,'select * from login')
-       %sprintf('query');
-       % result=get()
-       %result=get(fetch(exec('com','select * from login','DATA')))
-       
-        %curs=exec(com, 'select all user, pass  from login');
-        %curs=fetch(curs,3);
-        %setdbprefs('DataReturnFormat','cellarray');        
-        %res=fetch(res,3);
-        %curs.Data
-        %numrows = rows(curs);
-                
-        %untitled = curs.Data;
-        %r1c1 =  untitled(1,1);
-        %r1c1
-        %untitled2 = curs.Data;
-        %r1c2 =  untitled2(1,2);
-        %r1c2
-        
-        %new line
-        productdesc = '123';
-        sqlquery = ['SELECT * FROM login WHERE pass = ' '''' productdesc ''''];
-        curs2 = exec(com,sqlquery);
-        curs2 = fetch(curs2);
-        curs2.Data
-        numrows2 = rows(curs2)
-        
-        if(numrows2>0)
-            disp('Login uccessfull');
-        else
-            disp('Login Unsuccessfull');
-        end
-        
+        %curs=exec(com, 'select all username, mailStr  from login');
+        %curs=fetch(curs);
+        %setdbprefs('DataReturnFormat','cellarray'); 
+        %curs.Data;
+        %numrows=rows(curs);
+        %if(numrows>0)                    
+        %    mainFig
+
+        %else
+        %    warndlg('Invalid login credentials','!! Warning !!');
+            
+        %end
+               
+        res=exec(com,'select all username,email from login');
+        res=fetch(res);
+        setdbprefs('DataReturnFormat','cellarray'); 
+        items=res.Data;
+        numrows=rows(res);
+        if numrows>0
+            
+            %r1c1 =  items(1,1);
+            %r1c1
+            for c = 1
+               for r = 1:numrows
+                   getUsr=items(r,c);
+                   str1=strjoin(getUsr); %will contain all usernames in database one by one
+
+                   flag1 = strcmp(usr,str1);
+                   str1='';
+                   str1=strjoin(getUsr);
+                   if(flag1==1)
+                       chkFlg1=1;                   
+                       rowMatch=r;
+                       break;
+                   end           
+
+               end
+
+
+            end
+            for c = 2
+               for r = rowMatch
+
+                   getEmal=items(r,c);
+                   str2=strjoin(getEmal); %will contain all emails in database one by one
+                   flag2 = strcmp(emel,str2);
+                   str2='';
+                   str2=strjoin(getEmal);
+                   if(flag2==1)
+                       chkFlg2=1;
+                   end          
+
+               end
+
+
+            end
+                       if(chkFlg1==1) 
+                           if(chkFlg2==1)
+                               close loginFig;
+                               mainFig;
+                               %close(com);
+                           else
+                               warndlg('Invalid credentials: (Email address)','!! Warning !!');
+                           end
+                       else
+                           warndlg('Invalid credentials: (Username)','!! Warning !!');
+
+                       end
+            else
+                warndlg('No data in database','!! Warning !!');
+             end
+
+
+
         
 else
-        disp('error');
+        warndlg('Connection error(Server problem)','!! Warning !!');
 end
