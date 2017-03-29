@@ -4,7 +4,7 @@ host = 'smtp.mail.yahoo.com';
 port  = '465';
 emailto = 'waseemhilal10@gmail.com';
 m_subject = 'subject';
-m_text = '*** This is an automatically generated email, please do not reply ***Follow the link below to view my facebook profile:[https://www.facebook.com/mirwaseemhilal]';
+m_text = sprintf('<HTML><BODY>HELLO</BODY></HTML>');
 
 setpref( 'Internet','E_mail', mail );
 setpref( 'Internet', 'SMTP_Server', host );
